@@ -11,6 +11,7 @@
 #include "Mk60.h"
 #include "main.h"
 
+extern uint8_t adc_read;
 void gpio_init(void);
 void display(uint8_t byte);
 
@@ -41,12 +42,19 @@ void gpio_init(void)
 	PE->PCR[9].mux = 0x0;	//clear default function
 	PE->PCR[8].mux = 0x3;	//alt3 = UART5_TX
 	PE->PCR[9].mux = 0x3; 	//alt3 = UART5_RX
-	//GPIO port data direction Port A as output for LEDs (pin 11, 28, 29 and 10), Port E UART5(PTE8 TX, PTE9 RX)
+        //PTE4 and PTE5 as UART3
+        PB->PCR[4].mux = 0X0;    //clear the registers
+        PB->PCR[5].mux = 0X0;    //clear the registers
+        PB->PCR[4].mux = 0X
+        PB->PCR[5].mux = 0x       
+	//GPIO port data direction Port A as output for LEDs (pin 11, 28, 29 and 10), Port E UART5(PTE8 TX, PTE9 RX), Port B UART3(PTE4 TX, PTE5 RX)
 	GPIOA->PDDR.bit_reg.bit11 = out;
 	GPIOA->PDDR.bit_reg.bit28 = out;
 	GPIOA->PDDR.bit_reg.bit29 = out;
 	GPIOA->PDDR.bit_reg.bit10 = out;
+        GPIOB->PDDR.bit_reg.bit4 = out; //UART3_TX for output
 	GPIOE->PDDR.bit_reg.bit8 = out; //UART5_TX is an output
+        
 	//No need to configure GPIO pins as an input, by default all pins are inputs
 	//GPIOA->PDDR.bit_reg.bit19 = IN;
 	//GPIOE->PDDR.bit_reg.bit9 = IN //UART5_RX is an input
@@ -60,7 +68,9 @@ void gpio_init(void)
 void PORTA_IRQHandler(void)
 {
 	PA->ISFR.word_reg = 0xFFFFFFFF; //clear Interrupt Status Register by writing ones in all bits --- why???
-	toggle_LED2(); //toggle the second LED to indicate interrupt serviced
+	//trigger ADC1 conversion
+	adc_read=1;
+	toggle_LED2();toggle_LED2(); //toggle the second LED to indicate interrupt serviced
 }
 
 void display(uint8_t byte){
