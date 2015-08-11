@@ -45,8 +45,8 @@ void gpio_init(void)
         //PTE4 and PTE5 as UART3
         PB->PCR[4].mux = 0X0;    //clear the registers
         PB->PCR[5].mux = 0X0;    //clear the registers
-        PB->PCR[4].mux = 0X
-        PB->PCR[5].mux = 0x       
+        PB->PCR[4].mux = 0X3;
+        PB->PCR[5].mux = 0x3;       
 	//GPIO port data direction Port A as output for LEDs (pin 11, 28, 29 and 10), Port E UART5(PTE8 TX, PTE9 RX), Port B UART3(PTE4 TX, PTE5 RX)
 	GPIOA->PDDR.bit_reg.bit11 = out;
 	GPIOA->PDDR.bit_reg.bit28 = out;
